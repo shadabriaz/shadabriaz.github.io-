@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SR's Toolkit</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600;700&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --bg:        #0d0b14;
+      --surface:   #13101f;
+      --card:      #1a1528;
+      --border:    #2e2040;
+      --purple:    #6b3fa0;
+      --purple-light: #8b5fbf;
+      --mauve:     #c9a0c0;
+      --mauve-light: #e2c4de;
+      --text:      #ede0ea;
+      --muted:     #8a7a88;
+      --glow:      rgba(107, 63, 160, 0.35);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Mono', monospace;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* Ambient background */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 60% 40% at 20% 10%, rgba(107,63,160,0.18) 0%, transparent 70%),
+        radial-gradient(ellipse 50% 50% at 80% 80%, rgba(201,160,192,0.10) 0%, transparent 65%),
+        radial-gradient(ellipse 40% 30% at 60% 30%, rgba(139,95,191,0.08) 0%, transparent 60%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* Grain overlay */
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+      opacity: 0.4;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .wrapper {
+      position: relative;
+      z-index: 1;
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 80px 32px 100px;
+    }
+
+    /* ── Header ── */
+    header {
+      text-align: center;
+      margin-bottom: 80px;
+      animation: fadeDown 0.9s ease both;
+    }
+
+    .logo-mark {
+      display: inline-block;
+      width: 56px;
+      height: 56px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, var(--purple), var(--mauve));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 26px;
+      font-weight: 700;
+      color: #fff;
+      margin: 0 auto 28px;
+      box-shadow: 0 0 32px var(--glow);
+    }
+
+    h1 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2.6rem, 6vw, 4rem);
+      font-weight: 300;
+      letter-spacing: 0.04em;
+      color: var(--mauve-light);
+      line-height: 1.1;
+    }
+
+    h1 span {
+      color: var(--text);
+      font-weight: 600;
+    }
+
+    .tagline {
+      margin-top: 16px;
+      font-size: 0.78rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .divider {
+      width: 60px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--purple-light), transparent);
+      margin: 28px auto 0;
+    }
+
+    /* ── Grid ── */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 24px;
+    }
+
+    /* ── Card ── */
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 36px 30px 32px;
+      position: relative;
+      overflow: hidden;
+      text-decoration: none;
+      color: inherit;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+      animation: fadeUp 0.7s ease both;
+    }
+
+    .card:nth-child(1) { animation-delay: 0.15s; }
+    .card:nth-child(2) { animation-delay: 0.28s; }
+    .card:nth-child(3) { animation-delay: 0.41s; }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(107,63,160,0.13) 0%, transparent 70%);
+      opacity: 0;
+      transition: opacity 0.4s ease;
+      pointer-events: none;
+    }
+
+    .card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 20px 50px rgba(0,0,0,0.5), 0 0 0 1px var(--purple-light), 0 0 30px var(--glow);
+      border-color: var(--purple-light);
+    }
+
+    .card:hover::before { opacity: 1; }
+
+    .card-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--purple) 0%, var(--mauve) 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      flex-shrink: 0;
+      box-shadow: 0 4px 16px rgba(107,63,160,0.4);
+    }
+
+    .card-label {
+      font-size: 0.65rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--mauve);
+      font-weight: 500;
+    }
+
+    .card-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.55rem;
+      font-weight: 600;
+      color: var(--mauve-light);
+      line-height: 1.2;
+    }
+
+    .card-desc {
+      font-size: 0.78rem;
+      line-height: 1.75;
+      color: var(--muted);
+      flex: 1;
+    }
+
+    .card-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.72rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--mauve);
+      margin-top: 4px;
+      transition: gap 0.25s ease, color 0.25s ease;
+    }
+
+    .card:hover .card-cta {
+      gap: 12px;
+      color: var(--mauve-light);
+    }
+
+    .card-cta svg {
+      width: 14px;
+      height: 14px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      flex-shrink: 0;
+    }
+
+    /* corner accent */
+    .card-corner {
+      position: absolute;
+      top: 0; right: 0;
+      width: 60px; height: 60px;
+      background: linear-gradient(225deg, rgba(107,63,160,0.18) 0%, transparent 60%);
+      border-bottom-left-radius: 20px;
+    }
+
+    /* ── Footer ── */
+    footer {
+      text-align: center;
+      margin-top: 80px;
+      font-size: 0.68rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--muted);
+      animation: fadeUp 0.7s 0.6s ease both;
+    }
+
+    footer span {
+      color: var(--mauve);
+    }
+
+    /* ── Animations ── */
+    @keyframes fadeDown {
+      from { opacity: 0; transform: translateY(-24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(28px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 500px) {
+      .wrapper { padding: 60px 20px 80px; }
+      h1 { font-size: 2.2rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+
+    <header>
+      <div class="logo-mark">SR</div>
+      <h1><span>SR's</span> Toolkit</h1>
+      <p class="tagline">A curated set of handy web utilities</p>
+      <div class="divider"></div>
+    </header>
+
+    <div class="grid">
+
+      <!-- Tool 1 -->
+      <a class="card" href="usa-state-converter.html">
+        <div class="card-corner"></div>
+        <div class="card-icon">🗺️</div>
+        <div class="card-label">Tool 01</div>
+        <div class="card-title">USA State Names Converter</div>
+        <div class="card-desc">Convert full US state names into their official two-letter abbreviations and back again — instantly.</div>
+        <div class="card-cta">
+          Open Tool
+          <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </div>
+      </a>
+
+      <!-- Tool 2 -->
+      <a class="card" href="esp-finder.html">
+        <div class="card-corner"></div>
+        <div class="card-icon">📧</div>
+        <div class="card-label">Tool 02</div>
+        <div class="card-title">ESP Finder</div>
+        <div class="card-desc">Detect and identify the Email Service Provider behind any email address with a single lookup.</div>
+        <div class="card-cta">
+          Open Tool
+          <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </div>
+      </a>
+
+      <!-- Tool 3 -->
+      <a class="card" href="meta-tag-finder.html">
+        <div class="card-corner"></div>
+        <div class="card-icon">🔍</div>
+        <div class="card-label">Tool 03</div>
+        <div class="card-title">Meta Tag Finder</div>
+        <div class="card-desc">Enter any website URL and instantly retrieve all its meta tags — great for SEO audits and research.</div>
+        <div class="card-cta">
+          Open Tool
+          <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </div>
+      </a>
+
+    </div>
+
+    <footer>
+      Crafted by <span>SR</span> &nbsp;·&nbsp; Built with Claude
+    </footer>
+
+  </div>
+</body>
+</html>
